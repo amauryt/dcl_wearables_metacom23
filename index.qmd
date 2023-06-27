@@ -1,0 +1,704 @@
+---
+title: "Toward Blockchain-based Fashion Wearables in the Metaverse"
+subtitle: "The Case of Decentraland"
+pagetitle: "Toward Blockchain-based Fashion Wearables in the Metaverse: The Case of Decentraland"
+author:
+  - "Amaury Trujillo"
+  - "Clara Bacciu"
+author-meta: "Amaury Trujillo"
+institute:
+  - "IIT-CNR, Italy"
+  - "IIT-CNR, Italy"
+date: "2023-06-28"
+date-format: long
+format:
+  revealjs:
+    theme: [dark, style/custom.scss]
+    css: style/metacom_logo.css
+    pointer:
+      color: "#e7298a"
+      pointerSize: 24
+    include-in-header:
+      text: |
+        <script src="custom.js"></script>
+revealjs-plugins:
+  - pointer
+      
+---
+
+```{r}
+#| context: setup
+#| include: false
+
+library(data.table)
+library(ggplot2)
+library(ggtext)
+library(glue)
+library(patchwork)
+
+create_wearable_viewer_url <- function(parameters) {
+  base_url <- "https://wearable-preview.decentraland.org/"
+  parameters$disableBackground <- TRUE
+  parameters$hair <- "6f4235"
+  url_query = paste(names(parameters), parameters, sep = "=", collapse = "&")
+  paste0(base_url, "?", url_query)
+}
+
+create_wearable_iframe <- function(id, parameters, width = 1000, height = 550) {
+  # The default reference width and height of RevealJS are 1050×700,
+  # thus the default iframe dimensions should cover a slide with a title.
+  htmltools::tags$iframe(
+    id = id,
+    "data-src" = create_wearable_viewer_url(parameters),
+    "data-preload" = NA,
+    width = width,
+    height = height
+  )
+}
+```
+
+
+## Decentraland {background-video="./vids/dcl_hero.mp4" background-video-loop=true background-opacity=0.4}
+
+::: {.incremental}
+
+- A virtual world based on Ethereum
+- It touts itself as the first to be owned by its users
+- It started in 2015 and launched in February 2020
+- It uses MANA as its own cryptocurrency
+- Decentralized Autonomous Organization (DAO)
+- NFT trading of land, usernames, and **wearables**
+- Influence on how fashion assets will work on the Metaverse
+
+:::
+
+## Avatars and Wearables
+
+```{r}
+htmltools::withTags(
+  div(
+    class = "previewer-controls",
+    button(
+      "Switch gender",
+      id = "gender-switcher",
+      onClick = "setBodyShape('example-previewer', this)",
+      value = "Male"
+    ),
+    button(
+      "Pose!",
+      id = "pose-button",
+      onClick = "poseWearable('example-previewer')",
+    ),
+    select(
+      id = "wearable-category",
+      onChange = "updateWearableExample('example-previewer')",
+      option("[Category]", value = "-None-"),
+      option("Head", value = "0x813df80b1297f3ac71ec0aa8d883c7585388f2c3/0"),
+      option("Upper body", value = "0x6d3fb99676aa7d7b355f9f84112415ac86c720ec/0"),
+      option("Lower body", value = "0xfb8f85195aa9412918366a2d8a6e6ad02f22b9e3/8"),
+      option("Feet", value = "0x7e03cb1eb02aacfd5fdec88ced4aefa1015c4f86/0"),
+      option("Accessory", value = "0x89841f4ca30b48d5a7574f02b3d84049fe4b4d7b/0"),
+      option("Skin", value = "0xfb1d9d5dbb92f2dccc841bd3085081bb1bbeb04d/25")
+    )
+  )
+)
+```
+
+
+```{r}
+#= classes: r-stretch
+create_wearable_iframe("example-previewer", list(profile = "default"))
+```
+
+## Avatar Customization
+
+:::: {.columns}
+
+::: {.column width="35%"}
+
+```{r}
+create_wearable_iframe(
+  "money-maker",
+  list(
+    profile = "default",
+    emote = "money",
+    bodyShape = "urn:decentraland:off-chain:base-avatars:BaseFemale",
+    urn = "urn:decentraland:matic:collections-v2:0x8ce2d3198a436a4d3553866db7993af0ca1ec0b9:1",
+    urn = "urn:decentraland:matic:collections-v2:0xca3f06d124850ea57db0d6fcc4295b2e03a2bbe3:0",
+    urn = "urn:decentraland:matic:collections-v2:0x023a73d1cf10ed196f39700312a498b27c36e88e:2"
+  ),
+  width = 350,
+  height = 500
+)
+```
+
+:::
+
+::: {.column width="65%"}
+
+- Enjoyed and expected by most users
+- One of the main factors of purchase intent in virtual worlds
+- Highly enticing economic potential to the fashion industry
+
+:::
+
+::::
+
+## Metaverse Fashion Week
+
+:::: {.columns}
+
+::: {.column width="35%"}
+<video data-autoplay loop src="vids/mvfw_dg.mp4"></video>
+:::
+
+::: {.column width="65%"}
+
+Held in  March 2022, the MVFW involved several in-world fashion events and a wide variety of commodity and luxury brands, including _Tommy Hilfiger_ and _Dolce & Gabbana_.
+:::
+
+:::: 
+
+
+## Wearable Collections
+
+![Upon approval by a curation committee, each distinct item in a collection becomes available for minting into NFTs up to the item’s rarity limit chosen by the collection creator](imgs/collections_diagram.svg)
+
+## Our Work
+
+::: {.incremental}
+
+- The first study to quantitatively characterize Decentraland’s wearables, their publication, minting, and sales on the platform’s marketplace.
+- Based on data (up to December 31 2022) from Decentraland’s endpoints on TheGraph —an indexing protocol and service for querying blockchain networks.
+- Given that the v1 wearables (on Ethereum) are deprecated, we focus on v2 wearables (on Polygon).
+
+:::
+
+## Published Wearables
+
+::::: {.columns}
+
+:::: {.column .incremental width="55%" }
+
+- Circa 88% of submitted items are published
+- The vast majority (92.3%) of wearables are unisex
+- Most collections (68.8%) have only one item
+- Share by rarity follows a bell-shaped distribution
+
+::::
+
+:::: {.column width="5%"}
+<!-- empty column to create gap -->
+::::
+
+:::: {.column .fragment width="40%"}
+
+::: {style="font-size: 75%;"}
+
+| Rarity    | Limit  | Share |
+|-----------|-------:|------:|
+| unique    |      1 |  4.2% |
+| mythic    |     10 |  7.6% |
+| legendary |    100 | 32.3% |
+| epic      |   1000 | 31.5% |
+| rare      |   5000 | 11.7% |
+| uncommon  |  10000 |  7.4% |
+| common    | 100000 |  5.3% |
+
+:::
+
+::::
+
+:::::
+
+## Item Share
+
+```{r}
+#| dev: svglite
+
+
+iprc <- readRDS("./data/item_proportions_by_rarity_and_category.rds")
+iprc[, color := fifelse( prop >= 0.1, "black", "white")]
+
+iprc |>
+  ggplot(
+    aes(
+      x = rarity,
+      y = category,
+      fill = prop
+    )
+  ) +
+  geom_tile() +
+  geom_text(
+    aes(color = color, label = scales::label_percent(accuracy =  0.01)(prop) ),
+    size = 3.25
+  ) +
+  paletteer::scale_fill_paletteer_c("scico::acton", direction = 1, labels = scales::label_percent()) +
+  labs(
+    x = "Rarity",
+    y = "Category"
+  ) +
+  scale_color_identity() +
+  guides(
+    fill = guide_colorbar(
+      title = NULL,
+      label.hjust = 1
+    )  
+  ) +
+  ggdark::dark_theme_minimal() +
+  theme(
+    axis.text.y = element_text(size = 12),
+    axis.text.x = element_text(angle = 30, hjust = 1, size = 12),
+    plot.margin = margin(t = 0, r = -5, b = 0, l = 0),
+    plot.background = element_rect(linewidth = 0, color = 0)
+  )
+```
+
+## Monthly Publication
+
+```{r}
+av2_monthly_published_items <- readRDS("./data/av2_monthly_published_items.rds")
+av2_monthly_published_items |>
+  ggplot(aes(year_month, items_count, fill = is_highlighted, label = items_count)) +
+  geom_col() +
+  geom_text(vjust = 1, nudge_y = -20, color = "gray90") +
+  labs(
+    x = NULL,
+    y = NULL
+  ) +
+  tsibble::scale_x_yearmonth(
+    breaks = as.Date(tsibble::yearmonth("2021-06") + (0:6*3)),
+    labels = scales::label_date_short(),
+    expand = c(0,0)
+  ) +
+  scale_y_continuous(expand = c(0,0)) +
+  scale_fill_manual(values = c("FALSE" = "#393053", "TRUE" = "#635985")) +
+  annotate(
+    "text",
+    label = "Month of the\nMetaverse Fashion Week",
+    color = "gray75",
+    x = as.Date("2022-05-01"),
+    y = 875,
+    hjust = 0,
+    size = 4.5
+  ) +
+  annotate(
+    "segment",
+    x = as.Date("2022-03-20"),
+    xend = as.Date("2022-04-28"),
+    color = "gray40",
+    y = 875,
+    yend = 875,
+    arrow = arrow(ends = "first", length = unit(.1, "inches"))
+  ) +
+  ggdark::dark_theme_minimal() +
+  theme(
+    legend.position = "none",
+    plot.margin = margin(t = 0, r= 2, b = 0, l =0, unit = "pt"),
+    panel.grid.major.x = element_blank(),
+    panel.grid.major.y = element_line(color = "gray20"),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    plot.background = element_rect(linewidth = 0, color = "black")
+  )
+```
+
+## Token Mints
+
+- At the cutoff date, of the 50.87M maximum token supply, only 7%  have been minted.
+- Of these 3.56M mints:
+  * 18.9% were transfers from the creators to themselves
+  * 80.8% were transfers to other beneficiaries
+  * **Only 3.4%** were primary sales on the official marketplace
+
+
+## Primary Sale Price by Rarity
+
+```{r}
+#| dev: svglite
+
+wearables_rarity_limits <- c(
+  unique = 1,
+  mythic = 10,
+  legendary = 100,
+  epic = 1000,
+  rare = 5000,
+  uncommon = 10000,
+  common = 100000
+)
+
+qs::qread("./data/item_primary_sale_price.qs") |> 
+  ggplot(aes(max_supply, median_price_usd)) +
+  ggrastr::geom_beeswarm_rast(
+    mapping = aes(color = rarity), cex = 0.4, alpha = 0.3
+  ) +
+  labs(
+    x = "rarity limit",
+    y = latex2exp::TeX("$\\tilde{x}$ item sale price (\\$)")
+  ) +
+  scale_y_log10(
+    labels = scales::label_log()
+  ) +
+  scale_x_log10(
+    labels = scales::label_log(),
+    breaks = wearables_rarity_limits[-5]
+  ) +
+  paletteer::scale_color_paletteer_d("RColorBrewer::YlGnBu") +
+  coord_cartesian(
+    xlim = NULL,
+    ylim = c(0.0005, 10^4.15),
+    expand = TRUE,
+    default = FALSE,
+    clip = "on"
+  ) +
+  geom_smooth(method = "lm", color = "red", formula = y ~ x, linewidth = 2.5) +
+  guides(color = guide_legend(override.aes = list(alpha = 0.75))) +
+  ggdark::dark_theme_minimal() +
+  theme(
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10, hjust = 0),
+    axis.title = element_text(size = 12),
+    legend.position = "right",
+    legend.title = element_blank(),
+    legend.text = element_text(size = 14),
+    legend.margin = margin(0,0,0,0),
+    legend.box.margin = margin(0,0,0,0),
+    plot.margin = margin(0,0,0,0),
+    plot.background = element_rect(linewidth = 0, color = "black"),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major = element_line(color = "gray25")
+  )
+```
+
+## Primary Sale Price Linear Model
+
+```{r}
+htmltools::withTags(
+  table(
+    thead(
+      tr(
+        th(""),
+        th("log₁₀(price USD)", colspan=2, align="center")
+      ),
+      tr(
+        th("Coefficient"),
+        th("Estimate"),
+        th("Std. Error")
+      ),
+      style = "background-color:#333;"
+    ),
+    tbody(
+      tr(
+        td("(Intercept)"),
+        td("2.137", align="right"),
+        td("0.049", align="right")
+      ),
+      tr(
+        td("log₁₀(rarity limit)"),
+        td("–0.389", align="right"),
+        td("0.012", align="right")
+      ),
+      tr(
+        td("is single-item collection"),
+        td("–0.325", align="right"),
+        td("0.024", align="right")
+      ),
+      tr(
+        td("is unique"),
+        td("0.569", align="right"),
+        td("0.119", align="right")
+      ),
+      tr(
+        td("textures"),
+        td("0.057", align="right"),
+        td("0.013", align="right")
+      )
+    )
+  )
+)
+```
+
+
+
+## MANA Value (nominal USD)
+
+```{r}
+annotation_size <- 6
+
+meta_naming_date <- as.Date("2021-10-28")
+crypto_winter_start_date <- as.Date("2022-05-10")
+beeple_first_5000_days_sale_date <-  as.Date("2021-03-11")
+
+label_x_offset <- beeple_first_5000_days_sale_date - 120
+segment_x_end <- label_x_offset + 10
+
+meta_renaming_label_y <- 4.9
+beeple_sale_label_y <- 3
+
+mana_usd <- readRDS("./data/mana_nominal_usd.rds")
+ggplot(mana_usd, aes(date, nominal_usd)) +
+  geom_area(fill = "dodgerblue4", color = "dodgerblue1") +
+  ylab(NULL) +
+  xlab(NULL) +
+  scale_y_continuous(labels = scales::label_dollar()) +
+  scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
+  annotate(
+    "richtext",
+    label = "NFT surge",
+    label.padding = unit(0.3, "lines"),
+    label.size = NA,
+    color = "white",
+    fill = NA,
+    x = beeple_first_5000_days_sale_date - 50,
+    y = beeple_sale_label_y,
+    hjust = 1,
+    size = annotation_size
+  ) +
+  annotate(
+    "segment",
+    x = beeple_first_5000_days_sale_date - 5,
+    xend = beeple_first_5000_days_sale_date - 55,
+    y = beeple_sale_label_y - 2.1,
+    yend = beeple_sale_label_y - 0.1,
+    color = "gray75",
+    lty = 1,
+  ) +
+  annotate(
+    "richtext",
+    label ="*Meta* rebranding",
+    label.padding = unit(0.3, "lines"),
+    label.size = NA,
+    color = "white",
+    fill = NA,
+    x = meta_naming_date - 50,
+    y = meta_renaming_label_y,
+    hjust = 1,
+    size = annotation_size
+  ) +
+  annotate(
+    "segment",
+    x = meta_naming_date - 5,
+    xend = meta_naming_date - 55,
+    y = meta_renaming_label_y - 1.3,
+    yend = meta_renaming_label_y - 0.1,
+    color = "gray75",
+    lty = 1,
+  ) +
+  annotate(
+    "richtext",
+    label = "*Terra* collapse",
+    label.padding = unit(0.3, "lines"),
+    label.size = NA,
+    color = "white",
+    fill = NA,
+    x = crypto_winter_start_date + 50,
+    y = beeple_sale_label_y,
+    hjust = 0,
+    size = annotation_size
+  ) +
+  annotate(
+    "segment",
+    x = crypto_winter_start_date + 5,
+    xend = crypto_winter_start_date + 55,
+    y = beeple_sale_label_y - 1.6,
+    yend = beeple_sale_label_y - 0.1,
+    color = "gray75",
+    lty = 1,
+  ) +
+  ggdark::dark_theme_bw() +
+  theme(
+    legend.position = "top",
+    legend.title = element_blank(),
+    legend.margin = margin(0,0,0,0),
+    axis.text = element_text(size = 15),
+    plot.margin = margin(t = 0, r= 2, b = 0, l =0, unit = "pt"),
+    panel.grid = element_blank(),
+    panel.border = element_rect(color = "gray30", linewidth = 0.5)
+  )
+```
+
+::: {style="font-size: 62%; text-align:center"}
+High volatility, mostly due to events external to Decentraland.
+:::
+
+## Monthly Primary Sales
+
+```{r}
+av2_mint_sales_per_year_month <- qs::qread("./data/av2_mint_sales_per_year_month.qs")
+
+custom_month_date_labeler <- function(x) {
+  scales::label_date_short()(x) |> 
+    stringr::str_split("\n") |>
+    purrr::map(rev) |>
+    purrr::map_chr(~stringr::str_c(.x,collapse = "\n"))
+}
+
+
+geom_year_month_col <- function(fill = NULL, date_labels_position = "bottom") {
+  if (date_labels_position == "bottom") {
+    date_labeler <- scales::label_date_short()
+  } else {
+    date_labeler <- custom_month_date_labeler
+  }
+  list(
+    if (!is.null(fill)) geom_col(fill = fill),
+    xlab(NULL),
+    tsibble::scale_x_yearmonth(
+      breaks = as.Date(tsibble::yearmonth("2021-06") + (0:6*3)),
+      labels = date_labeler,
+      expand = c(0,0),
+      position = date_labels_position
+    ),
+    theme_minimal(),
+    theme(
+      legend.position = "none",
+      plot.margin = margin(t = 0, r= 2, b = 0, l =0, unit = "pt"),
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor.x = element_blank(),
+      panel.grid.minor.y = element_blank(),
+    )
+  )
+}
+ 
+av2_mint_sales_per_year_month[,.N, by = "year_month"] |> 
+  ggplot(aes(year_month, N)) +
+  ylab("volume") +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = scales::label_comma()
+  ) +
+  geom_year_month_col(fill = "#1f78b4", date_labels_position = "top") ->
+  av2_mint_sales_per_year_month_N_p
+
+av2_mint_sales_per_year_month[,.(price_usd =  sum(price_usd)), by = "year_month"] |> 
+  ggplot(aes(year_month, price_usd)) +
+  ylab("value") +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = scales::label_dollar()
+  ) +
+  geom_year_month_col(fill = "#1b9e77") ->
+  av2_mint_sales_per_year_month_price_usd_p
+
+
+av2_mint_sales_per_year_month[,.(median_price_usd = median(price_usd)), by = "year_month"] |> 
+  ggplot(aes(year_month, median_price_usd)) +
+  ylab(latex2exp::TeX("$\\tilde{x}$ price")) +
+  scale_y_continuous(
+    expand = c(0,0),
+    labels = scales::label_dollar()
+  ) +
+  geom_year_month_col(fill = "#ff7f00") ->
+  av2_mint_sales_per_year_month_median_price_usd_p
+
+
+av2_primary_sales_p <- (
+  av2_mint_sales_per_year_month_N_p +
+    ggdark::dark_theme_minimal() +
+    theme(
+      #axis.text.x = element_blank(),
+      plot.margin = margin(b = 20, unit = "pt"),
+    )
+) / (
+  av2_mint_sales_per_year_month_price_usd_p +
+    ggdark::dark_theme_minimal() +
+    theme(
+      axis.text.x = element_blank(),
+      plot.margin = margin(b = 20, unit = "pt"),
+    )
+  ) / (
+    av2_mint_sales_per_year_month_median_price_usd_p +
+    ggdark::dark_theme_minimal()
+  )
+
+
+print(
+  av2_primary_sales_p &
+  theme(
+    plot.background = element_rect(color = "black", fill = "black")
+  )
+)
+```
+
+## Outlier Items
+
+:::: {.columns style="font-size:65%;"}
+
+::: {.column width="33%"}
+
+```{r}
+create_wearable_iframe(
+  "most-minted",
+  list(
+    contract = "0x66194b1abcbfbedd83841775404b245c8f9e4183",
+    item = "2"
+  ),
+  width = 250,
+  height = 300
+)
+```
+
+**CCC - Hat - Gray**
+
+- Most minted with 99,961 mints
+- Part of a giveaway to promote its creator
+
+
+:::
+
+::: {.column width="33%"}
+
+```{r}
+create_wearable_iframe(
+  "most-complex",
+  list(
+    contract = "0x9ada69cfd7682e677effebda5ba0678334c1c065",
+    item = "0"
+  ),
+  width = 250,
+  height = 300
+)
+```
+
+**Sophia 42 - #2**
+
+- Most complex 3D model (8,657 triangles, 7 textures, and 6 meshes)
+- Used to promote _Sophia The Robot_ during the MVFW
+
+:::
+
+::: {.column width="33%"}
+
+```{r}
+create_wearable_iframe(
+  "most-sales",
+  list(
+    contract = "0xca3f06d124850ea57db0d6fcc4295b2e03a2bbe3",
+    item = "0"
+  ),
+  width = 250,
+  height = 300
+)
+```
+
+**The Royal Family Crown**
+
+- Most primary sales with 7,781 transactions
+- Sold at zero price plus network fees to promote its creator
+
+:::
+
+::::
+
+
+## Takeaways
+
+::: {.incremental}
+
+- The short-lived v1 wearables raises questions regarding the **long-term of assets** in the Metaverse
+- Only a **mere 3.4%** of mints were primary sales
+- **Rarity** is the single most important factor in sale price
+- The most popular and complex wearables were mostly used to **promote** other projects
+- Platforms should pay particular attention to **wearable economics** beyond their mere sale
+
+:::
