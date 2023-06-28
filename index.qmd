@@ -695,7 +695,7 @@ create_wearable_iframe(
 
 ::: {.incremental}
 
-- The short-lived v1 wearables raises questions regarding the **long-term of assets** in the Metaverse
+- The short-lived v1 wearables raises questions regarding the **long-term compatibility of assets** in the Metaverse
 - Only a **mere 3.4%** of mints were primary sales
 - **Rarity** is the single most important factor in sale price
 - The most popular and complex wearables were mostly used to **promote** other projects
