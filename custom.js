@@ -4,10 +4,6 @@ updateWearablePreviewer = function(iframe_id, options) {
   iframe.contentWindow.postMessage(event, '*');
 }
 
-getBodyShapeURN = function(gender) {
-  return ;
-}
-
 getWearableExampleOptions = function() {
   const gender = document.getElementById('gender-switcher').value;
   const wearableId = document.getElementById('wearable-category').value;
@@ -39,7 +35,7 @@ poseWearable = function(iframe_id) {
     'fashion-3',
     'fashion-4',
     'love',
-    // 'money', // we used later
+    // 'money', // we use it later
     'fist-pump',
     'head-explode'
   ];
@@ -61,8 +57,4 @@ updateWearableExample = function(iframe_id, select) {
   const options = getWearableExampleOptions();
   updateWearablePreviewer(iframe_id, options);
 }
-
-//document.addEventListener("DOMContentLoaded",function(){
-//  console.log('DOMContentLoaded');
-//});
 
