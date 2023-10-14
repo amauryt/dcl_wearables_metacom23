@@ -4,4 +4,4 @@ This repository contains a [Quarto](https://quarto.org/) presentation for the ho
 
 * **Rendered Presentation**: https://amauryt.github.io/dcl_wearables_metacom23/
 * **Pre-print on arXiv**: https://doi.org/10.48550/arXiv.2307.01322
-* **Article on IEEE Xplore**: [coming soon]
+* **Article on IEEE Xplore**: https://doi.org/10.1109/MetaCom57706.2023.00115
